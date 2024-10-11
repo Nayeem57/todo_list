@@ -9,7 +9,7 @@
     tools:context=".AddListFragment">
 
     <EditText
-        android:id="@+id/editTextTaskTitle"
+        android:id="@+id/TaskTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Task title"
@@ -21,7 +21,7 @@
 
 
     <EditText
-        android:id="@+id/editTextTaskDetails"
+        android:id="@+id/TaskDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Task details"
