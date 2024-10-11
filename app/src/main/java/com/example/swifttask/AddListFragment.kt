@@ -1,59 +1,85 @@
 package com.example.swifttask
-
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.icu.util.Calendar
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
+import com.example.swifttask.databinding.FragmentAddListBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddListFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    lateinit var binding: FragmentAddListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_list, container, false)
+        binding = FragmentAddListBinding.inflate(inflater, container, false)
+
+        binding.buttonPickDate.setOnClickListener {
+            pickADate()
+        }
+
+        binding.buttonPickTime.setOnClickListener {
+
+            pickATime()
+
+        }
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun pickATime() {
+
+        val calendar = Calendar.getInstance()
+
+        val minute = calendar.get(Calendar.MINUTE)
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        val timePicker = TimePickerDialog(
+            requireActivity(),
+            { _, selectedHour, selectedMinute ->
+
+                val amPm = if (selectedHour < 12) "AM" else "PM"
+
+                val formattedHour = if (selectedHour % 12 == 0) 12 else selectedHour % 12
+
+                val formattedMinute = String.format("%02d", selectedMinute)
+
+                val showTime = "$formattedHour:$formattedMinute $amPm"
+
+                binding.buttonPickTime.text = showTime
+            },
+            hour,
+            minute,
+            false
+        )
+        timePicker.show()
+    }
+
+
+    private fun pickADate() {
+
+        val calender = Calendar.getInstance()
+
+        val day = calender.get(Calendar.DAY_OF_MONTH)
+        val month = calender.get(Calendar.MONTH)
+        val year = calender.get(Calendar.YEAR)
+
+        val datePicker = DatePickerDialog(
+            requireActivity(),DatePickerDialog.OnDateSetListener()
+            { _,  selectedYear, selectedMonth, selectedDayOfMonth ->
+
+                val showDate = "$selectedDayOfMonth, ${selectedMonth + 1}, $selectedYear"
+                binding.buttonPickDate.text = showDate
+            },
+            year,
+            month,
+            day
+        )
+        datePicker.show()
     }
 }
