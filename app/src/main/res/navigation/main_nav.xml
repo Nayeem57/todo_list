@@ -18,5 +18,9 @@
         android:id="@+id/addListFragment"
         android:name="com.example.swifttask.AddListFragment"
         android:label="fragment_add_list"
-        tools:layout="@layout/fragment_add_list" />
+        tools:layout="@layout/fragment_add_list">
+        <action
+            android:id="@+id/action_addListFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
 </navigation>

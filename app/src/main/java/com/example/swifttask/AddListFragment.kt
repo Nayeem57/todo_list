@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.room.Room
 import com.example.swifttask.databinding.FragmentAddListBinding
 
@@ -18,7 +20,8 @@ class AddListFragment : Fragment() {
     var showDate: String? = null
 
 
-    lateinit var database : NoteDataBase
+    lateinit var database: NoteDataBase
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,22 +29,22 @@ class AddListFragment : Fragment() {
     ): View {
         binding = FragmentAddListBinding.inflate(inflater, container, false)
 
-        database = Room.databaseBuilder(requireActivity(), NoteDataBase ::class.java, "Task-DB").allowMainThreadQueries().build()
-
+        database = Room.databaseBuilder(requireActivity(), NoteDataBase::class.java, "Task-DB")
+            .allowMainThreadQueries().build()
 
         binding.buttonPickDate.setOnClickListener {
             pickADate()
         }
-
         binding.buttonPickTime.setOnClickListener {
-
             pickATime()
-
         }
-
         binding.buttonSubmitTask.setOnClickListener {
-
             val taskTitle = binding.TaskTitle.text.toString()
+            if (taskTitle.isEmpty()) {
+                Toast.makeText(requireContext(), "Task title cannot be empty", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
             val taskDetails = binding.TaskDetails.text.toString()
             val timeR = showTime ?: "00:00"
             val dateR = showDate ?: "00/00/0000"
@@ -49,6 +52,8 @@ class AddListFragment : Fragment() {
             val note = Note(title = taskTitle, details = taskDetails, time = timeR, date = dateR)
 
             database.getNoteDao().insertData(note)
+
+            findNavController().navigate(R.id.action_addListFragment_to_homeFragment)
 
         }
 
@@ -83,7 +88,6 @@ class AddListFragment : Fragment() {
         timePicker.show()
     }
 
-
     private fun pickADate() {
 
         val calender = Calendar.getInstance()
@@ -105,4 +109,5 @@ class AddListFragment : Fragment() {
         )
         datePicker.show()
     }
+
 }
